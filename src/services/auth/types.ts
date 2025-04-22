@@ -4,3 +4,8 @@ export interface ISignUpParams {
     firstName: string,
     lastName: string
 }
+
+export interface ILoginParams{
+    email: string,
+    password: string,
+}

@@ -1,66 +1,53 @@
 import * as React from "react";
 import {Button, Card, CardContent, CardHeader, Stack, TextField} from "@mui/material";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
-import { useStyles } from './styles.js'
-import useCombinedStore from "../../store/store.ts";
+import {useStyles} from "./styles";
 import {IFormInput} from "./types.ts";
 import {useNavigate} from "react-router";
+import useCombinedStore from "../../store/store.ts";
+import {useEffect} from "react";
 
-const Signup:React.FC = () => {
+const Login: React.FC = () => {
 
     const classes = useStyles();
-
     const navigate = useNavigate();
 
-    const signUp = useCombinedStore((state) => state.signUp)
+    const login = useCombinedStore((state) => state.login)
 
     const { control, handleSubmit, formState: { errors }, } = useForm({
         defaultValues: {
-            firstName: '',
-            lastName: '',
             email: '',
             password: '',
         },
     })
 
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        if(token){
+            navigate('/')
+        }
+    }, [navigate])
+
     const onSubmit: SubmitHandler<IFormInput> = async (data: IFormInput):Promise<void> => {
-        await signUp(data)
+        await login(data, () => navigate('/'))
     }
 
-    const goToLogin = () => {
-        navigate('/login')
+    const goToSignup = () => {
+        navigate('/signup')
+    }
+
+    const forgotPassword = () => {
+        navigate('/forgot-password')
     }
 
     return (
         <Card sx={{ minWidth: 275 }} className={classes.card}>
             <CardHeader
-                title="Sign Up"
+                title="Login"
             />
             <CardContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Stack direction="column" justifyContent='left' spacing={2}>
-                        <Controller
-                            name="firstName"
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field }) =>
-                                <TextField
-                                    error={!!errors.firstName}
-                                    helperText={!!errors.firstName && 'First Name is required'}
-                                    label="First Name"
-                                    type="text" {...field} />
-                            }/>
-                        <Controller
-                            name="lastName"
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field }) =>
-                                <TextField
-                                    error={!!errors.lastName}
-                                    helperText={!!errors.lastName && 'Last Name is required'}
-                                    label="Last Name"
-                                    type="text" {...field} />
-                            }/>
                         <Controller
                             name="email"
                             control={control}
@@ -84,8 +71,9 @@ const Signup:React.FC = () => {
                                     type="password" {...field} />
                             }/>
                         <Stack direction="row" justifyContent='space-between' spacing={2}>
-                            <Button type='submit'>Sign Up</Button>
-                            <Button onClick={goToLogin}>Login</Button>
+                            <Button type='submit'>Login</Button>
+                            <Button onClick={forgotPassword}>Forgot Password</Button>
+                            <Button onClick={goToSignup}>Create Account</Button>
                         </Stack>
                     </Stack>
                 </form>
@@ -94,4 +82,4 @@ const Signup:React.FC = () => {
     );
 }
 
-export default Signup;
+export default Login;

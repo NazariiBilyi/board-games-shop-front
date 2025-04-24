@@ -1,5 +1,5 @@
 import {Route, Routes} from "react-router";
-import Home from "./containers/Home.tsx";
+import Home from "./containers/Home/Home.tsx";
 import Login from "./containers/Login/Login.tsx";
 import Signup from "./containers/SignUp/Signup.tsx";
 import NotFound from "./containers/NotFound.tsx";

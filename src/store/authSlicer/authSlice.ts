@@ -31,7 +31,7 @@ export const authSlice: StateCreator<IAuthState> = (set) => ({
 
             const userData = response.data;
 
-            localStorage.setItem('token', userData.token);
+            localStorage.setItem('accessToken', userData.token);
 
             set({ id: userData.userId, token: userData.token });
             callback()

@@ -2,7 +2,7 @@ import axios, {  AxiosInstance } from 'axios';
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-const http: AxiosInstance = axios.create({
+const axiosInstance: AxiosInstance = axios.create({
     baseURL,
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
@@ -16,7 +16,17 @@ const http: AxiosInstance = axios.create({
     responseType: 'json',
 })
 
-http.interceptors?.request.use((request) => {
+axiosInstance.interceptors.request.use(request => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+        request.headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+    return request;
+}, error => {
+    return Promise.reject(error);
+});
+
+axiosInstance.interceptors?.request.use((request) => {
     if (!request.data) {
         request.data = null;
     }
@@ -27,4 +37,4 @@ http.interceptors?.request.use((request) => {
     return request;
 });
 
-export default http;
+export default axiosInstance;

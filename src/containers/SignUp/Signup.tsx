@@ -1,10 +1,14 @@
 import * as React from "react";
-import {Button, Card, CardContent, CardHeader, Stack, TextField} from "@mui/material";
+import { CardContent, CardHeader, Stack } from "@mui/material";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import { useStyles } from './styles.js'
 import useCombinedStore from "../../store/store.ts";
 import {IFormInput} from "./types.ts";
 import {useNavigate} from "react-router";
+import FormCard from "../../components/styled/FormCard.tsx";
+import FormTextField from "../../components/styled/FormTextField.tsx";
+import SubmitButton from "../../components/styled/SubmitButton.tsx";
+import NavigationButton from "../../components/styled/NavigationButton.tsx";
 
 const Signup:React.FC = () => {
 
@@ -32,10 +36,8 @@ const Signup:React.FC = () => {
     }
 
     return (
-        <Card sx={{ minWidth: 275 }} className={classes.card}>
-            <CardHeader
-                title="Sign Up"
-            />
+        <FormCard className={classes.card}>
+            <CardHeader className={classes.cardHeader}/>
             <CardContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Stack direction="column" justifyContent='left' spacing={2}>
@@ -44,7 +46,7 @@ const Signup:React.FC = () => {
                             control={control}
                             rules={{ required: true }}
                             render={({ field }) =>
-                                <TextField
+                                <FormTextField
                                     error={!!errors.firstName}
                                     helperText={!!errors.firstName && 'First Name is required'}
                                     label="First Name"
@@ -55,7 +57,7 @@ const Signup:React.FC = () => {
                             control={control}
                             rules={{ required: true }}
                             render={({ field }) =>
-                                <TextField
+                                <FormTextField
                                     error={!!errors.lastName}
                                     helperText={!!errors.lastName && 'Last Name is required'}
                                     label="Last Name"
@@ -66,7 +68,7 @@ const Signup:React.FC = () => {
                             control={control}
                             rules={{ required: true }}
                             render={({ field }) =>
-                                <TextField
+                                <FormTextField
                                     error={!!errors.email}
                                     helperText={!!errors.email && 'Email is required'}
                                     label="Email"
@@ -77,20 +79,20 @@ const Signup:React.FC = () => {
                             control={control}
                             rules={{ required: true }}
                             render={({ field }) =>
-                                <TextField
+                                <FormTextField
                                     error={!!errors.password}
                                     helperText={!!errors.password && 'Passowrd is required'}
                                     label="Password"
                                     type="password" {...field} />
                             }/>
-                        <Stack direction="row" justifyContent='space-between' spacing={2}>
-                            <Button type='submit'>Sign Up</Button>
-                            <Button onClick={goToLogin}>Login</Button>
+                        <Stack direction="column" alignItems='center' justifyContent='space-between' spacing={2}>
+                            <SubmitButton className={classes.signUpBtn} type='submit'>Sign Up</SubmitButton>
+                            <NavigationButton className={classes.loginBtn} onClick={goToLogin}>Go to Login</NavigationButton>
                         </Stack>
                     </Stack>
                 </form>
             </CardContent>
-        </Card>
+        </FormCard>
     );
 }
 

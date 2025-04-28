@@ -1,6 +1,6 @@
-import {ISignUpParams, ILoginParams} from "../../services/auth/types.ts";
+import {ISignUpParams, ILoginParams, IForgotPasswordParams} from "../../services/auth/types.ts";
 import {AxiosResponse} from "axios";
-import {IAuthResponse, IAuthState, ILoginResponse} from "./types.ts";
+import {IAuthResponse, IAuthState, ILoginResponse, IResetPasswordParams} from "./types.ts";
 import {AuthService} from "../../services/auth/auth.ts";
 import {StateCreator} from "zustand/vanilla";
 
@@ -39,6 +39,33 @@ export const authSlice: StateCreator<IAuthState> = (set) => ({
             console.log(error)
             set({error: 'Invalid Credentials'})
             // Handle authentication errors
+        }
+    },
+    forgotPassword: async(params: IForgotPasswordParams, callback: () => void ):Promise<void> => {
+        try {
+            set({error: 'null'})
+
+            await AuthService.forgotPassword(params);
+
+            callback()
+
+        } catch (error) {
+            console.log(error)
+            set({error: 'Something went wrong'})
+            // Handle authentication errors
+        }
+    },
+    resetPassword: async(params: IResetPasswordParams, callback: () => void):Promise<void> => {
+        try {
+            set({error: 'null'})
+
+            await AuthService.resetPassword(params)
+
+            callback()
+
+        } catch (error) {
+            console.log(error)
+            set({error: 'Something went wrong'})
         }
     },
     clearToken: () => {

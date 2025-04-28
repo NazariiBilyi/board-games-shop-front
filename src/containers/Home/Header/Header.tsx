@@ -21,7 +21,7 @@ const Header = () => {
     };
 
     const logout = () => {
-        localStorage.removeItem('token')
+        localStorage.removeItem('accessToken');
         clearToken()
         navigate('/login')
 

@@ -9,3 +9,8 @@ export interface ILoginParams{
     email: string,
     password: string,
 }
+
+export interface IForgotPasswordParams {
+    email: string
+    environmentURL: string
+}

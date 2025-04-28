@@ -1,4 +1,4 @@
-import {ILoginParams, ISignUpParams} from "../../services/auth/types.ts";
+import {IForgotPasswordParams, ILoginParams, ISignUpParams} from "../../services/auth/types.ts";
 
 export interface IAuthState {
     token: null | string,
@@ -6,6 +6,8 @@ export interface IAuthState {
     error: null | string,
     signUp: (params: ISignUpParams) => Promise<void>,
     login: (params: ILoginParams, callback: () => void) => Promise<void>,
+    forgotPassword: (params: IForgotPasswordParams, callback: () => void) => Promise<void>,
+    resetPassword: (params: IResetPasswordParams, callback: () => void) => Promise<void>,
     clearToken: () => void,
 }
 
@@ -20,5 +22,11 @@ export interface ILoginResponse {
     userId: string;
     token: string;
     errors?: [];
+}
+
+export interface IResetPasswordParams {
+    password: string,
+    token: string,
+    userId: string
 }
 

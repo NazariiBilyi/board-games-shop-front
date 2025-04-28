@@ -1,4 +1,5 @@
 import {makeStyles} from "@mui/styles";
+import account from '../../../assets/images/account.jpeg'
 
 export const useStyles = makeStyles({
     title: {
@@ -16,7 +17,7 @@ export const useStyles = makeStyles({
         boxShadow: 'none',
     },
     menuButton: {
-        backgroundImage: 'url(public/assets/account.jpeg)',
+        backgroundImage: `url(${account})`,
         backgroundSize: 'contain',
         height: '34px',
         width: '34px',

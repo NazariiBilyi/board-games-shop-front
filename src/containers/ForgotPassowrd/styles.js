@@ -1,5 +1,5 @@
-import { makeStyles } from '@mui/styles';
-import loginHead from '../../assets/images/loginHead.png'
+import {makeStyles} from "@mui/styles";
+import forgotPassword from '../../assets/images/forgotPassHead.png'
 
 export const useStyles = makeStyles({
     card: {
@@ -7,7 +7,7 @@ export const useStyles = makeStyles({
         minHeight: '621px',
     },
     cardHeader: {
-        backgroundImage: `url(${loginHead})`,
+        backgroundImage: `url(${forgotPassword})`,
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         height: '245px',

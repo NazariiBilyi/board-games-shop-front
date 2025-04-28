@@ -1,10 +1,21 @@
 import { makeStyles } from '@mui/styles';
+import signUpHead from '../../assets/images/signupHead.png'
 
 export const useStyles = makeStyles({
     card: {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
+        minWidth: '414px',
+        minHeight: '621px',
+    },
+    cardHeader: {
+        backgroundImage: `url(${signUpHead})`,
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        height: '245px',
+    },
+    signUpBtn: {
+        width: '100%',
+    },
+    loginBtn: {
+        width: "fit-content",
     }
 })

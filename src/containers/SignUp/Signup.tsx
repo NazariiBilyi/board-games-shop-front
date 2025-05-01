@@ -28,7 +28,7 @@ const Signup:React.FC = () => {
     })
 
     const onSubmit: SubmitHandler<IFormInput> = async (data: IFormInput):Promise<void> => {
-        await signUp(data)
+        await signUp(data, goToLogin)
     }
 
     const goToLogin = () => {

@@ -1,10 +1,10 @@
 import {Route, Routes} from "react-router";
-import Home from "./containers/Home/Home.tsx";
-import Login from "./containers/Login/Login.tsx";
-import Signup from "./containers/SignUp/Signup.tsx";
-import NotFound from "./containers/NotFound.tsx";
-import ForgotPassword from "./containers/ForgotPassowrd/ForgotPassword.tsx";
-import ResetPassword from "./containers/ResetPassword/ResetPassword.tsx";
+import Home from "../Home/Home.tsx";
+import Login from "../Login/Login.tsx";
+import Signup from "../SignUp/Signup.tsx";
+import NotFound from "../NotFound.tsx";
+import ForgotPassword from "../ForgotPassowrd/ForgotPassword.tsx";
+import ResetPassword from "../ResetPassword/ResetPassword.tsx";
 
 const Router = () => {
     return (

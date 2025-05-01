@@ -3,11 +3,13 @@ import {useStyles} from "./styles";
 import useCombinedStore from "../../../store/store.ts";
 import { useState, MouseEvent } from "react";
 import {AppBar, Box, IconButton, Menu, MenuItem, Stack, Toolbar, Typography} from "@mui/material";
+import {UserRoles} from "../../../store/authSlicer/types.ts";
 
 const Header = () => {
     const classes = useStyles();
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const userRole = useCombinedStore((state) => state.userRole);
 
     const navigate = useNavigate();
     const clearToken = useCombinedStore((state) => state.clearToken)
@@ -24,7 +26,11 @@ const Header = () => {
         localStorage.removeItem('accessToken');
         clearToken()
         navigate('/login')
+        handleClose()
+    }
 
+    const goToAdminPanel = () => {
+        navigate('/admin-panel')
         handleClose()
     }
 
@@ -57,6 +63,7 @@ const Header = () => {
                             open={Boolean(anchorEl)}
                             onClose={handleClose}
                         >
+                            {UserRoles.ADMIN === userRole && <MenuItem onClick={goToAdminPanel}>Admin Panel</MenuItem>}
                             <MenuItem onClick={handleClose}>Profile</MenuItem>
                             <MenuItem onClick={handleClose}>My account</MenuItem>
                             <MenuItem onClick={logout}>Logout</MenuItem>

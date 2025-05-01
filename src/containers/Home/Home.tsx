@@ -1,28 +1,22 @@
 import Header from "./Header/Header.tsx";
-import {Box} from "@mui/material";
-import {useEffect} from "react";
-import {useNavigate} from "react-router";
-import useCombinedStore from "../../store/store.ts";
+import {Box, Container} from "@mui/material";
+import {useStyles} from "./styles";
+import {ParchmentBox} from "../../components/styled/ParchmentBox.tsx";
 
 
 const Home = () => {
+    const classes = useStyles();
 
-    const navigate = useNavigate();
-    const token = useCombinedStore((state) => state.token)
-
-
-    useEffect(() => {
-        if(!token && !localStorage.getItem('accessToken')){
-            navigate('/login')
-        }
-        if(token && !localStorage.getItem('accessToken')){
-            localStorage.setItem('accessToken', token)
-        }
-    }, [navigate, token])
+    const token = localStorage.getItem('accessToken')
 
     return(
         <Box>
-            <Header/>
+            {token && <Header/>}
+            <Container className={classes.container}>
+                <ParchmentBox className={classes.banner} >
+                    Enchanted pics for the month
+                </ParchmentBox>
+            </Container>
         </Box>
 
     )

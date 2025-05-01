@@ -17,6 +17,7 @@
     "@mui/material": "^7.0.2",
     "@mui/styles": "^6.4.11",
     "axios": "^1.8.4",
+    "jwt-decode": "^4.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.55.0",

@@ -10,6 +10,7 @@ export const useStyles = makeStyles({
         color: 'rgb(164, 123, 64)',
         position: 'absolute',
         left: '50%',
+        top: '0',
         transform: 'translate(-50%, 0)'
     },
     appBar: {

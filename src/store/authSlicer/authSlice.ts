@@ -75,5 +75,8 @@ export const authSlice: StateCreator<IAuthState> = (set) => ({
     },
     clearToken: () => {
         set({token: null})
-    }
+    },
+    setState: (state) => {
+        set(state)
+    },
 })

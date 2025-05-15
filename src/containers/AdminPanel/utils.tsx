@@ -1,12 +1,12 @@
-import AddShopItem from "../AddShopItem/AddShopItem.tsx";
 import {ITab} from "../../components/TabsComponent/types.ts";
+import ViewBoardGames from "./ViewProducts/ViewProducts.tsx";
 
 export const getAdminPanelTabs = () => {
     return[
         {
             index: 0,
-            label: 'Add Item',
-            Component: <AddShopItem />,
+            label: 'Board Games',
+            Component: <ViewBoardGames />,
         }
     ] as ITab[]
 }

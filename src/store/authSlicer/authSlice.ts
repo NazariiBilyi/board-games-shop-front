@@ -23,6 +23,7 @@ export const authSlice: StateCreator<IAuthState> = (set) => ({
             set({ id: userData.userId });
         } catch (error) {
             console.log(error)
+            set({ error: 'Something went wrong'})
             // Handle authentication errors
 
         }

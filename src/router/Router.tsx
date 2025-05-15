@@ -6,30 +6,24 @@ import NotFound from "../containers/NotFound.tsx";
 import ForgotPassword from "../containers/ForgotPassowrd/ForgotPassword.tsx";
 import ResetPassword from "../containers/ResetPassword/ResetPassword.tsx";
 import AdminRoute from "./AdminRoute.tsx";
-import AddShopItem from "../containers/AddShopItem/AddShopItem.tsx";
-import AdminPanel from "../containers/AdminPanel/AdminPanel.tsx";
 import Layout from "../containers/Layout/Layout.tsx";
 import AdminLayout from "../containers/AdminLayout/AdminLayout.tsx";
+import ViewProducts from "../containers/AdminPanel/ViewProducts/ViewProducts.tsx";
+import AddProducts from "../containers/AdminPanel/AddProducts/AddProducts.tsx";
 
 const Router = () => {
     return (
         <Routes>
-
-            <Route path='login' element={<Login />} />
-            <Route path='signup' element={<Signup/>} />
-            <Route path="forgot-password" element={<ForgotPassword />} />
-            <Route path="reset-password/:token/:userId" element={<ResetPassword />} />
             <Route element={<Layout />}>
+                <Route path='login' element={<Login />} />
+                <Route path='signup' element={<Signup/>} />
+                <Route path="forgot-password" element={<ForgotPassword />} />
+                <Route path="reset-password/:token/:userId" element={<ResetPassword />} />
                 <Route index element={<Home/>} />
             </Route>
-            <Route element={<AdminLayout />}>
-                <Route path="admin-panel" element={
-                    <AdminRoute>
-                        <AdminPanel />
-                    </AdminRoute>
-                }>
-                    <Route path="add-product" element={<AddShopItem />} />
-                </Route>
+            <Route path='admin-panel' element={<AdminRoute><AdminLayout/></AdminRoute>}>
+                <Route path='products' element={<ViewProducts />} />
+                <Route path='add-product' element={<AddProducts />} />
             </Route>
             <Route path='*' element={<NotFound />} />
         </Routes>

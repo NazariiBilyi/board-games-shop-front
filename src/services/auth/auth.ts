@@ -1,9 +1,10 @@
 import {IForgotPasswordParams, ILoginParams, ISignUpParams} from "./types.ts";
 import http from "../axios.ts";
 import {IResetPasswordParams} from "../../store/authSlicer/types.ts";
+import {AxiosResponse} from "axios";
 
 export const AuthService = {
-    async signUp(params: ISignUpParams) {
+    async signUp(params: ISignUpParams): Promise<AxiosResponse<any>> {
         return await http.put('/auth/signup', params)
     },
     async login(params: ILoginParams) {

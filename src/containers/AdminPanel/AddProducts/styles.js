@@ -1,8 +1,5 @@
 import {makeStyles} from "@mui/styles";
+import addGame from "../../../assets/images/addGame.png";
 
 export const useStyles = makeStyles({
-    root: {
-        width: '100vw',
-        height: '100vh'
-    }
 })

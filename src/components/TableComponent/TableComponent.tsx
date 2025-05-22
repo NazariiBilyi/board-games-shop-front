@@ -1,5 +1,4 @@
 import {
-    Box,
     Paper,
     Table,
     TableBody,
@@ -8,38 +7,44 @@ import {
     TableHead,
     TableRow, Typography
 } from "@mui/material";
+import {IViewShopItemsProps} from "./types.ts";
+import * as React from "react";
+import {useStyles} from "./styles";
 
-const ViewShopItems = ({rows, headCells}) => {
+const TableComponent: React.FC<IViewShopItemsProps> = ({rows, headCells, actions}) => {
 
-    if(rows.length === 0){
-        return (<Typography>
+    const classes = useStyles()
+
+    if(rows?.length === 0){
+        return (<Typography className={classes.noItemsPrompt}>
             The are no items
         </Typography>)
     }
 
     return(
-        <Box>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            {headCells?.map((head) => (<TableCell key={head.name} align="right">{head.name}</TableCell>))}
+                            {headCells?.map((head) => (<TableCell key={head.id} align="left">{head.name}</TableCell>))}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {rows?.map((row) => (
                             <TableRow
-                                key={row.name}
+                                key={row.name as string}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                {Object.keys(row).map((key) => <TableCell key={key} align="right">{row[key]}</TableCell>)}
+                                {Object.keys(row).map(key => key !== 'id' && <TableCell key={key} align="left">{row[key]}</TableCell>)}
+                                {actions && <TableCell align="left">
+                                    {actions(row)}
+                                    </TableCell>}
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-        </Box>
     )
 }
 
-export default ViewShopItems;
+export default TableComponent;

@@ -1,20 +1,11 @@
-import {Box, InputLabel, MenuItem, Select, SelectChangeEvent, } from "@mui/material";
+import { Box, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import {useState} from "react";
 import AddBoardGame from "./AddBoardGame/AddBoardGame.tsx";
-
-const products = [
-    {
-        value: '0',
-        name: 'Board Games'
-    },
-    {
-        value: '1',
-        name: 'Accessories'
-    }
-]
+import { products } from '../utils/getProductTypes.ts'
 
 const AddProducts = () => {
     // const classes = useStyles();
+
 
     const [productType, setProductType] = useState<string>('0')
 
@@ -27,8 +18,6 @@ const AddProducts = () => {
             case '0': return <AddBoardGame itemType={productType} />
         }
     }
-
-
 
     return(
         <Box>

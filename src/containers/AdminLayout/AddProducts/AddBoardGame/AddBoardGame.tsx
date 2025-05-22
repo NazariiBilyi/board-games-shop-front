@@ -40,8 +40,6 @@ const AddBoardGame: React.FC<IAddBoardGameProps> = ({itemType}) => {
         },
     })
 
-    console.log(images)
-
     const onUploadImages = async (itemId: string) => {
         const formData = new FormData();
         images.forEach((image) => {
@@ -53,7 +51,7 @@ const AddBoardGame: React.FC<IAddBoardGameProps> = ({itemType}) => {
 
     const onSubmit: SubmitHandler<IFormInput> = async (data): Promise<void> => {
         const boardGame = transformBoardGame(data)
-        await addBoardGame({
+        addBoardGame({
             item: boardGame,
             itemType: Number(itemType)
         }, onUploadImages)

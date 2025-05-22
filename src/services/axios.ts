@@ -21,6 +21,19 @@ axiosInstance.interceptors.request.use(request => {
     if (accessToken) {
         request.headers['Authorization'] = `Bearer ${accessToken}`;
     }
+
+    if (
+        request.method === 'delete' &&
+        (request.data === undefined || request.data === null)
+    ) {
+        delete request.headers['Content-Type'];
+    }
+
+    // Set multipart header if FormData
+    if (request.data instanceof FormData) {
+        request.headers['Content-Type'] = 'multipart/form-data';
+    }
+
     return request;
 }, error => {
     return Promise.reject(error);

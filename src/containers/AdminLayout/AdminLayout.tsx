@@ -13,7 +13,7 @@ const AdminLayout = () => {
         <Box className={classes.root}>
             {token && <AdminHeader />}
             <AdminSidebar />
-            <Box sx={{marginTop: '20px', marginLeft: '260px'}}>
+            <Box className={classes.content}>
                 <Outlet />
             </Box>
         </Box>

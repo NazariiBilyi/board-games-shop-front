@@ -8,8 +8,8 @@ import ResetPassword from "../containers/ResetPassword/ResetPassword.tsx";
 import AdminRoute from "./AdminRoute.tsx";
 import Layout from "../containers/Layout/Layout.tsx";
 import AdminLayout from "../containers/AdminLayout/AdminLayout.tsx";
-import ViewProducts from "../containers/AdminPanel/ViewProducts/ViewProducts.tsx";
-import AddProducts from "../containers/AdminPanel/AddProducts/AddProducts.tsx";
+import ViewProducts from "../containers/AdminLayout/ViewProducts/ViewProducts.tsx";
+import AddProducts from "../containers/AdminLayout/AddProducts/AddProducts.tsx";
 
 const Router = () => {
     return (

@@ -7,7 +7,6 @@ import {IAdminState} from "./adminSlicer/types.ts";
 const useCombinedStore = create<IAuthState & IAdminState>()((...a) => ({
     ...authSlice(...a),
     ...adminSlice(...a),
-    // ...createFishSlice(...a),
 }))
 
 export default useCombinedStore;

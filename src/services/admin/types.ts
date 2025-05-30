@@ -29,6 +29,7 @@ export interface IBoardGame extends IShopItem {
 export interface IItemPayload {
     name: string,
     type: string,
+    titleImage: string | File | null,
     price: number,
     availability: boolean,
     description: string,
@@ -39,12 +40,6 @@ export interface IItemPayload {
     gameTime: string,
 }
 
-// Final payload to send to backend
-export interface ICreateItemRequestData {
-    itemType: IItemType,
-    item: IItemPayload,
-}
-
 export interface IUploadImagesRequestData {
     itemId: string,
     images: any,
@@ -52,6 +47,10 @@ export interface IUploadImagesRequestData {
 
 export interface ICreateNewItemResponse extends IGenericResponse{
     itemId: string,
+}
+
+export interface IUploadTitleImageResponse extends IGenericResponse{
+    imageId: string,
 }
 
 export interface IUploadImagesResponse extends IGenericResponse{

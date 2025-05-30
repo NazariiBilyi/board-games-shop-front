@@ -1,19 +1,22 @@
 import {
     ICreateNewItemResponse,
-    ICreateItemRequestData,
-    IUploadImagesResponse, IBoardGamesResponse
+    IUploadImagesResponse, IBoardGamesResponse, IItemPayload, IUploadTitleImageResponse
 } from "./types.ts";
 import {AxiosResponse} from "axios";
 import http from "../axios.ts";
 import {IGenericResponse} from "../types.ts";
 
 export const AdminService = {
-    async createNewItem (data: ICreateItemRequestData): Promise<AxiosResponse<ICreateNewItemResponse>> {
-        return await http.put('/admin/add-new-item', data)
+    async createNewItem (itemType: string, data: IItemPayload): Promise<AxiosResponse<ICreateNewItemResponse>> {
+        return await http.put(`/admin/add-new-item/${itemType}`, data)
+    },
+
+    async uploadTitleImage (formData: FormData): Promise<AxiosResponse<IUploadTitleImageResponse>> {
+        return await http.put('/admin/upload-title-image', formData)
     },
 
     async uploadItemImages(formData: FormData): Promise<AxiosResponse<IUploadImagesResponse>> {
-        return await http.put('/admin/upload-images', formData, {
+        return await http.put(`/admin/upload-images/`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             }

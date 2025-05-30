@@ -11,7 +11,7 @@ export const adminSlice: StateCreator<IAdminState> = (set) => ({
         try {
             set({error: null})
 
-            const response: AxiosResponse<ICreateNewItemResponse> = await AdminService.createNewItem(params);
+            const response: AxiosResponse<ICreateNewItemResponse> = await AdminService.createNewItem(params.itemType.toString(), params.item);
 
             const itemData = response.data;
 
@@ -21,17 +21,6 @@ export const adminSlice: StateCreator<IAdminState> = (set) => ({
 
         }catch (e){
             set({ error: 'Something went wrong'})
-        }
-    },
-    uploadItemImages: async(params): Promise<void> => {
-        try {
-            set({error: null})
-
-           await AdminService.uploadItemImages(params);
-
-        }catch (e){
-            console.log(e)
-            set({error: 'Something went wrong'})
         }
     },
     getItemsByType: async(params): Promise<void> => {

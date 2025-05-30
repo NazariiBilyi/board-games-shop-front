@@ -2,6 +2,8 @@ export interface IFormInput {
     name: string,
     type: string,
     price: string,
+    titleImage: File | null | string,
+    images?: File | null | string,
     availability: string,
     description: string,
     ageRestrictions: string,

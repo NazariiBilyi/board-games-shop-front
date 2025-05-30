@@ -6,6 +6,10 @@ import {ChangeEvent, useState} from "react";
 import useCombinedStore from "../../../../store/store.ts";
 import {IAddBoardGameProps, IFormInput} from "./types.ts";
 import {transformBoardGame} from "./utils.ts";
+import {StandardImageList} from "../../../../components/StandardImagesList/StandardImagesList.tsx";
+import {IImageData} from "../../../../components/StandardImagesList/types.ts";
+import * as React from "react";
+import {AdminService} from "../../../../services/admin/admin.ts";
 
 const availabilityOptions = [
     {
@@ -21,14 +25,16 @@ const availabilityOptions = [
 const AddBoardGame: React.FC<IAddBoardGameProps> = ({itemType}) => {
 
     const [images, setImages] = useState<File[]>([]);
+    const [imagePreviews, setImagePreviews] = useState<IImageData[]>([]);
 
-    const addBoardGame = useCombinedStore((state) => state.addNewProduct)
-    const uploadImages = useCombinedStore(state => state.uploadItemImages)
+    const addBoardGame = useCombinedStore(state => state.addNewProduct)
 
-    const { control, handleSubmit, formState: { errors }, } = useForm({
+    const { control, handleSubmit, setValue, getValues, formState: { errors } } = useForm<IFormInput>({
         defaultValues: {
             name: '',
             type: '',
+            titleImage: null,
+            images: null,
             price: '',
             availability: '',
             description: '',
@@ -40,27 +46,92 @@ const AddBoardGame: React.FC<IAddBoardGameProps> = ({itemType}) => {
         },
     })
 
-    const onUploadImages = async (itemId: string) => {
-        const formData = new FormData();
-        images.forEach((image) => {
-            formData.append('images', image); // name should match your backend expectation
-        });
-        formData.append('itemId', itemId);
-        await uploadImages(formData)
-    }
+    const onUploadImages = async () => {
+        const titleImage = getValues('titleImage') as File;
+        const file = images.find(img => img.name === titleImage?.name)
+        if(!file) {
+            return {
+                titleImageId: null,
+                imagesId: null
+            };
+        }
+        try {
+            const formDataTitleImage = new FormData();
+            formDataTitleImage.append("image", file);
+            const formDataImages = new FormData();
+            images.forEach((file) => formDataImages.append("images", file));
+            const [titleImageRes, itemImagesRes] = await Promise.all([
+                AdminService.uploadTitleImage(formDataTitleImage),
+                AdminService.uploadItemImages(formDataImages)
+            ])
+            return {
+                titleImageId: titleImageRes.data.imageId,
+                imagesId: itemImagesRes.data.imagesId
+            };
+        }catch (e) {
+            console.log(e)
+            return {
+                titleImageId: null,
+                imagesId: null
+            };
+        }
+    };
 
-    const onSubmit: SubmitHandler<IFormInput> = async (data): Promise<void> => {
-        const boardGame = transformBoardGame(data)
+
+    const onSaveItem = async (data: IFormInput, titleImageId: string, imagesId: string) => {
+        const boardGame = transformBoardGame(data);
+        boardGame.titleImage = titleImageId as string;
+        boardGame.images = imagesId as string;
         addBoardGame({
             item: boardGame,
             itemType: Number(itemType)
-        }, onUploadImages)
+        })
+    }
+
+
+
+    const onSubmit: SubmitHandler<IFormInput> = async (data): Promise<void> => {
+        const {titleImageId, imagesId} = await onUploadImages()
+        if(titleImageId && imagesId) {
+            await onSaveItem(data, titleImageId, imagesId)
+        }
     }
 
     const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files) {
-            setImages(Array.from(event.target.files));
+
+        if (event.target.files?.length && event.target.files.length > 0) {
+
+            const files = Array.from(event.target.files);
+            const previews =  files.map(file => ({
+                src: URL.createObjectURL(file),
+                title: file.name as string
+            }))
+
+            setImages(files);
+            setImagePreviews(previews)
         }
+    }
+
+    const onDeleteImage = (title: string) => () => {
+        setImagePreviews(prevImages => prevImages.filter(img => img.title !== title));
+        setImages(prevImages => prevImages.filter(img => img.name !== title))
+        const titleImage = getValues('titleImage');
+        if(titleImage && titleImage instanceof File && titleImage.name === title) {
+            setValue('titleImage', null, {
+                shouldDirty: false,
+                shouldTouch: false,
+                shouldValidate: false,
+            })
+        }
+    }
+
+    const onSetImageAsTitle = (title: string) => {
+        const titleImage = images.find(img => img.name === title)
+        setValue('titleImage', titleImage as File, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+        });
     }
 
     return(
@@ -238,8 +309,9 @@ const AddBoardGame: React.FC<IAddBoardGameProps> = ({itemType}) => {
                     </Button>
                 </Grid>
             </Grid>
+            <StandardImageList imageData={imagePreviews} deleteImage={onDeleteImage} selectImage={onSetImageAsTitle} />
             <Stack spacing={2} flexDirection='row' alignItems='center' justifyContent='center'>
-                <Button type='submit'>Create Item</Button>
+                <Button disabled={!getValues('titleImage') || Object.entries(errors).length !== 0} type='submit'>Create Item</Button>
             </Stack>
         </form>
     )

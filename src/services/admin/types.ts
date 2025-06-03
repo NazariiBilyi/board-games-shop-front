@@ -7,14 +7,23 @@ export enum IItemType {
     Accessory = 2,
 }
 
-export interface IShopItem {
+export interface IImageData{
     _id?: string,
+}
+
+export interface IImage {
+    _id?: string,
+    images: IImageData[]
+}
+
+export interface IShopItem {
+    id?: string,
     name: string,
     type: string,
     price: number,
     availability: boolean,
     description: string,
-    images?: [],
+    images?: IImage,
     ageRestrictions: string,
     vendor: string,
 }
@@ -55,6 +64,10 @@ export interface IUploadTitleImageResponse extends IGenericResponse{
 
 export interface IUploadImagesResponse extends IGenericResponse{
     imagesId: string,
+}
+
+export interface IBoardGameResponse extends IGenericResponse{
+    boardGame: IBoardGame,
 }
 
 export interface IBoardGamesResponse extends IGenericResponse{

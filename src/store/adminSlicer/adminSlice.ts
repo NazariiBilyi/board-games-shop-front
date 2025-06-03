@@ -1,12 +1,13 @@
 import {StateCreator} from "zustand/vanilla";
-import {IAdminState} from "./types.ts";
+import {IAdminState, IGetItemByIdAndTypeParams} from "./types.ts";
 import {AxiosResponse} from "axios";
 import { ICreateNewItemResponse } from "../../services/admin/types.ts";
 import {AdminService} from "../../services/admin/admin.ts";
 
 export const adminSlice: StateCreator<IAdminState> = (set) => ({
     error: null,
-    products: [],
+    products: null,
+    productForEdit: null ,
     addNewProduct: async (params, callback): Promise<void>  => {
         try {
             set({error: null})
@@ -21,6 +22,25 @@ export const adminSlice: StateCreator<IAdminState> = (set) => ({
 
         }catch (e){
             set({ error: 'Something went wrong'})
+        }
+    },
+    updateProduct: async (params): Promise<void> => {
+
+    },
+    getItemByIdAndType: async (params: IGetItemByIdAndTypeParams): Promise<void> => {
+        try{
+            set({error: null})
+
+            const { itemType, itemId } = params;
+
+            const response = await AdminService.getItemByIdAndType(itemId, itemType);
+
+            set({
+                productForEdit: response.data.boardGame
+            })
+
+        } catch (e) {
+            set({error: 'Something went wrong'})
         }
     },
     getItemsByType: async(params): Promise<void> => {

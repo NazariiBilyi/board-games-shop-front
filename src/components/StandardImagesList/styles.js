@@ -2,7 +2,7 @@ import {makeStyles} from "@mui/styles";
 
 export const useStyles = makeStyles({
     imageList: {
-        width: '500px',
+        width: '100%',
         minHeight: '210px'
     },
     imageListItem: {
@@ -20,6 +20,8 @@ export const useStyles = makeStyles({
       border: '3px solid blue'
     },
     deleteButton: {
-        width: 'fit-content'
+        width: 'fit-content',
+        color: 'red',
+        position: 'absolute',
     }
 })

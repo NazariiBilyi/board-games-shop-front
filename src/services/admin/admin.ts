@@ -1,6 +1,6 @@
 import {
     ICreateNewItemResponse,
-    IUploadImagesResponse, IBoardGamesResponse, IItemPayload, IUploadTitleImageResponse
+    IUploadImagesResponse, IBoardGamesResponse, IItemPayload, IUploadTitleImageResponse, IBoardGameResponse
 } from "./types.ts";
 import {AxiosResponse} from "axios";
 import http from "../axios.ts";
@@ -21,6 +21,10 @@ export const AdminService = {
                 'Content-Type': 'multipart/form-data',
             }
         })
+    },
+
+    async getItemByIdAndType(itemId: string, itemType: string): Promise<AxiosResponse<IBoardGameResponse>> {
+        return await http.get(`/admin/item/${itemId}/${itemType}`)
     },
 
     async getItemsByType(type: string): Promise<AxiosResponse<IBoardGamesResponse>> {

@@ -1,3 +1,5 @@
+import {IImageData} from "../../../../components/StandardImagesList/types.ts";
+
 export interface IFormInput {
     name: string,
     type: string,
@@ -14,5 +16,8 @@ export interface IFormInput {
 }
 
 export interface IAddBoardGameProps {
-    itemType: string
+    defaultValues: IFormInput,
+    save: (data: IFormInput, titleImage: File, images: File[]) => void,
+    isEdit: boolean,
+    imagesPreviews: IImageData[]
 }

@@ -5,7 +5,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {useStyles} from "./styles";
 import {useState} from "react";
 
-export const StandardImageList: React.FC<IStandardImagesListProps> = ({imageData, deleteImage, selectImage}) => {
+export const StandardImageList: React.FC<IStandardImagesListProps> = ({imageData, deleteImage, selectImage }) => {
 
     const [selectedImage, setSelectedImage] = useState<string>('')
 
@@ -17,8 +17,8 @@ export const StandardImageList: React.FC<IStandardImagesListProps> = ({imageData
     }
 
     return (
-        <ImageList className={classes.imageList} cols={4} gap={15} rowHeight={164}>
-        {imageData.map((item) => (
+        <ImageList className={classes.imageList} cols={3} gap={20} rowHeight={300}>
+        {imageData?.map((item) => (
             <ImageListItem className={classes.imageListItem} key={item.src}>
                 <Tooltip title="Delete image" placement="top">
                     <IconButton className={classes.deleteButton} onClick={deleteImage(item?.title as string)}>

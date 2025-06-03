@@ -10,12 +10,15 @@ import TableComponent from "../../../components/TableComponent/TableComponent.ts
 import {getTableHeads} from "./utils/getTableHeads.ts";
 import {getTableRows} from "./utils/getTableRows.ts";
 import {IRow} from "../../../components/TableComponent/types.ts";
+import {useNavigate} from "react-router";
+import {IShopItem} from "./types.ts";
 
 const ViewProducts: React.FC = () => {
 
     const classes = useStyles()
+    const navigate = useNavigate();
 
-    const [productType, setProductType] = useState<number | undefined>(undefined)
+    const [productType, setProductType] = useState<number>(0)
 
     const productsByType= useCombinedStore(state => state.products)
 
@@ -37,7 +40,7 @@ const ViewProducts: React.FC = () => {
     },[productType])
 
     const rows = useMemo(() => {
-        return getTableRows(productsByType, productType as number)
+        return getTableRows(productsByType as IShopItem[], productType as number)
     },[productType, productsByType])
 
     const handleChange= (event: SelectChangeEvent) => {
@@ -45,7 +48,7 @@ const ViewProducts: React.FC = () => {
     };
 
     const onEditProduct = (productId: string) => () => {
-
+        navigate(`/admin-panel/edit-product/${productId}/${productType}`)
     }
 
     const onDeleteProduct = (productId: string) => () => {
@@ -55,19 +58,16 @@ const ViewProducts: React.FC = () => {
         })
     }
 
-    const onGetActions = (row: IRow) => {
-        console.log(row)
-        return(
-            <Stack flexDirection='row' alignItems='center' justifyContent='flex-start'>
-                <IconButton onClick={onEditProduct(row.id as string)}>
-                    <EditIcon />
-                </IconButton>
-                <IconButton onClick={onDeleteProduct(row.id as string)}>
-                    <DeleteIcon />
-                </IconButton>
-            </Stack>
-        )
-    }
+    const onGetActions = (row: IRow) => (
+        <Stack flexDirection='row' alignItems='center' justifyContent='flex-start'>
+            <IconButton onClick={onEditProduct(row.id as string)}>
+                <EditIcon />
+            </IconButton>
+            <IconButton onClick={onDeleteProduct(row.id as string)}>
+                <DeleteIcon />
+            </IconButton>
+        </Stack>
+    )
 
     return (
         <Box className={classes.root}>

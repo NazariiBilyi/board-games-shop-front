@@ -10,6 +10,7 @@ import Layout from "../containers/Layout/Layout.tsx";
 import AdminLayout from "../containers/AdminLayout/AdminLayout.tsx";
 import ViewProducts from "../containers/AdminLayout/ViewProducts/ViewProducts.tsx";
 import AddProducts from "../containers/AdminLayout/AddProducts/AddProducts.tsx";
+import EditProducts from "../containers/AdminLayout/EditProducts/EditProducts.tsx";
 
 const Router = () => {
     return (
@@ -24,6 +25,7 @@ const Router = () => {
             <Route path='admin-panel' element={<AdminRoute><AdminLayout/></AdminRoute>}>
                 <Route path='products' element={<ViewProducts />} />
                 <Route path='add-product' element={<AddProducts />} />
+                <Route path='edit-product/:id/:type' element={<EditProducts />} />
             </Route>
             <Route path='*' element={<NotFound />} />
         </Routes>

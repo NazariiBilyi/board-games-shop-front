@@ -2,14 +2,11 @@ import {Button, Grid, MenuItem, Stack, TextField} from "@mui/material";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import VisuallyHiddenInput from "../../../../components/styled/VisuallyHiddenInput.tsx";
-import {ChangeEvent, useState} from "react";
-import useCombinedStore from "../../../../store/store.ts";
+import {ChangeEvent, useEffect, useState} from "react";
 import {IAddBoardGameProps, IFormInput} from "./types.ts";
-import {transformBoardGame} from "./utils.ts";
 import {StandardImageList} from "../../../../components/StandardImagesList/StandardImagesList.tsx";
 import {IImageData} from "../../../../components/StandardImagesList/types.ts";
 import * as React from "react";
-import {AdminService} from "../../../../services/admin/admin.ts";
 
 const availabilityOptions = [
     {
@@ -22,94 +19,46 @@ const availabilityOptions = [
     }
 ]
 
-const AddBoardGame: React.FC<IAddBoardGameProps> = ({itemType}) => {
+const BoardGameForm: React.FC<IAddBoardGameProps> = ({ defaultValues, save, isEdit, imagesPreviews}) => {
 
     const [images, setImages] = useState<File[]>([]);
     const [imagePreviews, setImagePreviews] = useState<IImageData[]>([]);
 
-    const addBoardGame = useCombinedStore(state => state.addNewProduct)
+    useEffect(() => {
+        setImagePreviews(imagesPreviews)
+    }, [imagesPreviews]);
 
-    const { control, handleSubmit, setValue, getValues, formState: { errors } } = useForm<IFormInput>({
-        defaultValues: {
-            name: '',
-            type: '',
-            titleImage: null,
-            images: null,
-            price: '',
-            availability: '',
-            description: '',
-            ageRestrictions: '',
-            vendor: '',
-            gameTime: '',
-            numberOfPlayers: '',
-            language: ''
-        },
+    const { control, handleSubmit, setValue, getValues, formState: { errors, dirtyFields } } = useForm<IFormInput>({
+        defaultValues: defaultValues,
     })
 
-    const onUploadImages = async () => {
+    const onSubmit: SubmitHandler<IFormInput> = async (data): Promise<void> => {
         const titleImage = getValues('titleImage') as File;
         const file = images.find(img => img.name === titleImage?.name)
-        if(!file) {
-            return {
-                titleImageId: null,
-                imagesId: null
-            };
-        }
-        try {
-            const formDataTitleImage = new FormData();
-            formDataTitleImage.append("image", file);
-            const formDataImages = new FormData();
-            images.forEach((file) => formDataImages.append("images", file));
-            const [titleImageRes, itemImagesRes] = await Promise.all([
-                AdminService.uploadTitleImage(formDataTitleImage),
-                AdminService.uploadItemImages(formDataImages)
-            ])
-            return {
-                titleImageId: titleImageRes.data.imageId,
-                imagesId: itemImagesRes.data.imagesId
-            };
-        }catch (e) {
-            console.log(e)
-            return {
-                titleImageId: null,
-                imagesId: null
-            };
-        }
-    };
-
-
-    const onSaveItem = async (data: IFormInput, titleImageId: string, imagesId: string) => {
-        const boardGame = transformBoardGame(data);
-        boardGame.titleImage = titleImageId as string;
-        boardGame.images = imagesId as string;
-        addBoardGame({
-            item: boardGame,
-            itemType: Number(itemType)
-        })
-    }
-
-
-
-    const onSubmit: SubmitHandler<IFormInput> = async (data): Promise<void> => {
-        const {titleImageId, imagesId} = await onUploadImages()
-        if(titleImageId && imagesId) {
-            await onSaveItem(data, titleImageId, imagesId)
+        if(file && images.length > 0) {
+            save(data, file, images)
         }
     }
 
     const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-
         if (event.target.files?.length && event.target.files.length > 0) {
-
             const files = Array.from(event.target.files);
             const previews =  files.map(file => ({
                 src: URL.createObjectURL(file),
                 title: file.name as string
             }))
-
             setImages(files);
             setImagePreviews(previews)
         }
+    }
+
+    const onSetImageAsTitle = (title: string) => {
+        const titleImage = images.find(img => img.name === title)
+        setValue('titleImage', titleImage as File, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+        });
     }
 
     const onDeleteImage = (title: string) => () => {
@@ -123,15 +72,6 @@ const AddBoardGame: React.FC<IAddBoardGameProps> = ({itemType}) => {
                 shouldValidate: false,
             })
         }
-    }
-
-    const onSetImageAsTitle = (title: string) => {
-        const titleImage = images.find(img => img.name === title)
-        setValue('titleImage', titleImage as File, {
-            shouldDirty: true,
-            shouldTouch: true,
-            shouldValidate: true,
-        });
     }
 
     return(
@@ -317,4 +257,4 @@ const AddBoardGame: React.FC<IAddBoardGameProps> = ({itemType}) => {
     )
 }
 
-export default AddBoardGame;
+export default BoardGameForm;

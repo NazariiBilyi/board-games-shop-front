@@ -10,7 +10,7 @@ export interface IAuthState {
     forgotPassword: (params: IForgotPasswordParams, callback: () => void) => Promise<void>,
     resetPassword: (params: IResetPasswordParams, callback: () => void) => Promise<void>,
     clearToken: () => void,
-    setState: (state: any) => void
+    setState: (state: Partial<IAuthState>) => void
 }
 
 export interface IAuthResponse {

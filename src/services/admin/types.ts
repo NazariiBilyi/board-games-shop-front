@@ -9,9 +9,11 @@ export enum IItemType {
 
 export interface IImageData{
     _id?: string,
+    name: string,
+    isTitle: boolean,
 }
 
-export interface IImage {
+export interface IImages {
     _id?: string,
     images: IImageData[]
 }
@@ -23,7 +25,7 @@ export interface IShopItem {
     price: number,
     availability: boolean,
     description: string,
-    images?: IImage,
+    images?: IImages,
     ageRestrictions: string,
     vendor: string,
 }
@@ -34,12 +36,11 @@ export interface IBoardGame extends IShopItem {
     language: string
 }
 
-// Inner object structure for the actual item
 export interface IItemPayload {
     name: string,
     type: string,
-    titleImage: string | File | null,
     price: number,
+    images: string,
     availability: boolean,
     description: string,
     ageRestrictions: string,
@@ -49,17 +50,10 @@ export interface IItemPayload {
     gameTime: string,
 }
 
-export interface IUploadImagesRequestData {
-    itemId: string,
-    images: any,
-}
+export type IItemEditPayload = Omit<IItemPayload, 'images'>;
 
 export interface ICreateNewItemResponse extends IGenericResponse{
     itemId: string,
-}
-
-export interface IUploadTitleImageResponse extends IGenericResponse{
-    imageId: string,
 }
 
 export interface IUploadImagesResponse extends IGenericResponse{

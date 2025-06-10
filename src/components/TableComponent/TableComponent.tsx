@@ -32,7 +32,7 @@ const TableComponent: React.FC<IViewShopItemsProps> = ({rows, headCells, actions
                     <TableBody>
                         {rows?.map((row) => (
                             <TableRow
-                                key={row.name as string}
+                                key={Math.random().toString()}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 {Object.keys(row).map(key => key !== 'id' && <TableCell key={key} align="left">{row[key]}</TableCell>)}

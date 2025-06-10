@@ -1,12 +1,10 @@
-import {Button, Grid, MenuItem, Stack, TextField} from "@mui/material";
+import {Grid, IconButton, MenuItem, Stack, TextField} from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import VisuallyHiddenInput from "../../../../components/styled/VisuallyHiddenInput.tsx";
-import {ChangeEvent, useEffect, useState} from "react";
 import {IAddBoardGameProps, IFormInput} from "./types.ts";
-import {StandardImageList} from "../../../../components/StandardImagesList/StandardImagesList.tsx";
-import {IImageData} from "../../../../components/StandardImagesList/types.ts";
 import * as React from "react";
+import {useEffect} from "react";
+import {useStyles} from "./styles";
 
 const availabilityOptions = [
     {
@@ -19,63 +17,39 @@ const availabilityOptions = [
     }
 ]
 
-const BoardGameForm: React.FC<IAddBoardGameProps> = ({ defaultValues, save, isEdit, imagesPreviews}) => {
+const BoardGameForm: React.FC<IAddBoardGameProps> = ({ defaultValues, save, isEdit, disableSubmitButton}) => {
 
-    const [images, setImages] = useState<File[]>([]);
-    const [imagePreviews, setImagePreviews] = useState<IImageData[]>([]);
+    const classes = useStyles()
 
-    useEffect(() => {
-        setImagePreviews(imagesPreviews)
-    }, [imagesPreviews]);
-
-    const { control, handleSubmit, setValue, getValues, formState: { errors, dirtyFields } } = useForm<IFormInput>({
+    const { control, handleSubmit, reset, formState: { errors, dirtyFields } } = useForm<IFormInput>({
         defaultValues: defaultValues,
     })
 
+    useEffect(() => {
+        reset(defaultValues)
+    }, [defaultValues, reset]);
+
     const onSubmit: SubmitHandler<IFormInput> = async (data): Promise<void> => {
-        const titleImage = getValues('titleImage') as File;
-        const file = images.find(img => img.name === titleImage?.name)
-        if(file && images.length > 0) {
-            save(data, file, images)
+        if(isEdit) {
+            const filtered = (Object.keys(dirtyFields) as (keyof IFormInput)[]).reduce((acc, key) => {
+                acc[key] = data[key];
+                return acc;
+            }, {} as Partial<IFormInput>);
+            save(filtered)
+        } else {
+            save(data)
         }
     }
 
-    const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files?.length && event.target.files.length > 0) {
-            const files = Array.from(event.target.files);
-            const previews =  files.map(file => ({
-                src: URL.createObjectURL(file),
-                title: file.name as string
-            }))
-            setImages(files);
-            setImagePreviews(previews)
-        }
-    }
-
-    const onSetImageAsTitle = (title: string) => {
-        const titleImage = images.find(img => img.name === title)
-        setValue('titleImage', titleImage as File, {
-            shouldDirty: true,
-            shouldTouch: true,
-            shouldValidate: true,
-        });
-    }
-
-    const onDeleteImage = (title: string) => () => {
-        setImagePreviews(prevImages => prevImages.filter(img => img.title !== title));
-        setImages(prevImages => prevImages.filter(img => img.name !== title))
-        const titleImage = getValues('titleImage');
-        if(titleImage && titleImage instanceof File && titleImage.name === title) {
-            setValue('titleImage', null, {
-                shouldDirty: false,
-                shouldTouch: false,
-                shouldValidate: false,
-            })
-        }
+    const onChekIfDisableSubmitButton = (): boolean => {
+        return disableSubmitButton || Object.entries(errors).length !== 0 || Object.keys(dirtyFields).length === 0
     }
 
     return(
         <form onSubmit={handleSubmit(onSubmit)}>
+            <Stack spacing={2} flexDirection='row' alignItems='center' justifyContent='flex-start'>
+                <IconButton className={classes.submitButton} disabled={onChekIfDisableSubmitButton()} type='submit'><AddIcon />{isEdit ? 'Edit Item' : 'Create Item'}</IconButton>
+            </Stack>
             <Grid container spacing={3}>
                 <Grid size={5}>
                     <Controller
@@ -232,27 +206,7 @@ const BoardGameForm: React.FC<IAddBoardGameProps> = ({ defaultValues, save, isEd
                                 {...field} />
                         }/>
                 </Grid>
-                <Grid size={5}>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload files
-                        <VisuallyHiddenInput
-                            type="file"
-                            onChange={onFileChange}
-                            multiple
-                        />
-                    </Button>
-                </Grid>
             </Grid>
-            <StandardImageList imageData={imagePreviews} deleteImage={onDeleteImage} selectImage={onSetImageAsTitle} />
-            <Stack spacing={2} flexDirection='row' alignItems='center' justifyContent='center'>
-                <Button disabled={!getValues('titleImage') || Object.entries(errors).length !== 0} type='submit'>Create Item</Button>
-            </Stack>
         </form>
     )
 }

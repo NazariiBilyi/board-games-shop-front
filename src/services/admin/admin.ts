@@ -1,6 +1,6 @@
 import {
     ICreateNewItemResponse,
-    IUploadImagesResponse, IBoardGamesResponse, IItemPayload, IUploadTitleImageResponse, IBoardGameResponse
+    IUploadImagesResponse, IBoardGamesResponse, IItemPayload, IBoardGameResponse
 } from "./types.ts";
 import {AxiosResponse} from "axios";
 import http from "../axios.ts";
@@ -11,12 +11,20 @@ export const AdminService = {
         return await http.put(`/admin/item/${itemType}`, data)
     },
 
-    async uploadTitleImage (formData: FormData): Promise<AxiosResponse<IUploadTitleImageResponse>> {
-        return await http.put('/admin/item/image', formData)
-    },
-
     async uploadItemImages(formData: FormData): Promise<AxiosResponse<IUploadImagesResponse>> {
         return await http.put(`/admin/item/images`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        })
+    },
+
+    async updateItemByIdAndType(itemId: string, itemType: string, data: Partial<IItemPayload>): Promise<AxiosResponse<IGenericResponse>> {
+        return await http.put(`/admin/item/${itemId}/${itemType}`, data)
+    },
+
+    async updateItemImages(collectionId: string, formData: FormData): Promise<AxiosResponse<IGenericResponse>> {
+        return await http.put(`/images/img/${collectionId}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             }

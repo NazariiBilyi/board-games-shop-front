@@ -1,63 +1,94 @@
 import { Box, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
-import {useState} from "react";
+import {ChangeEvent, useState} from "react";
 import BoardGameForm from "./BoardGameForm/BoardGameForm.tsx";
 import { products } from '../utils/getProductTypes.ts'
 import {IItemType} from "../../../services/admin/types.ts";
-import {IFormInput} from "./BoardGameForm/types.ts";
+import {FormInputForSave} from "./BoardGameForm/types.ts";
 import {defaultValues, transformBoardGame} from "./BoardGameForm/utils.ts";
 import useCombinedStore from "../../../store/store.ts";
 import {AdminService} from "../../../services/admin/admin.ts";
+import {StandardImageList} from "../../../components/StandardImagesList/StandardImagesList.tsx";
+import {IImageData} from "../../../components/StandardImagesList/types.ts";
+import {Loader} from "../../../components/Loader/Loader.tsx";
 
 const AddProducts = () => {
 
     const [productType, setProductType] = useState<string>('0')
+    const [images, setImages] = useState<File[]>([]);
+    const [imagePreviews, setImagePreviews] = useState<IImageData[]>([]);
 
     const addBoardGame = useCombinedStore(state => state.addNewProduct)
+    const isLoading = useCombinedStore(state => state.isLoading);
 
     const handleChange = (event: SelectChangeEvent) => {
         setProductType(event.target.value as string);
     };
 
-    const onUploadImages = async (file: File, images: File[]) => {
-        if(!file) {
+    const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files?.length && event.target.files.length > 0) {
+            const files = Array.from(event.target.files);
+            const previews =  files.map(file => ({
+                src: URL.createObjectURL(file),
+                title: file.name as string,
+                isTitle: false,
+            }))
+            setImages(prevValue => [...prevValue, ...files]);
+            setImagePreviews(prevValue => [...prevValue, ...previews])
+        }
+    }
+
+    const onSetImageAsTitle = (title: string) => {
+        setImagePreviews(prevState => prevState.map(img => {
+            if(img.title === title) {
+                img.isTitle = true
+                return img
+            }
+            return {...img, isTitle: false}
+        }))
+    }
+
+    const onDeleteImage = (title: string) => () => {
+        setImagePreviews(prevImages => prevImages.filter(img => img.title !== title));
+        setImages(prevImages => prevImages.filter(img => img.name !== title))
+    }
+
+    const onUploadImages = async () => {
+        const titleImage = imagePreviews.find(img => img.isTitle);
+        if(!titleImage) {
             return {
-                titleId: null,
                 imagesId: null
             };
         }
         try {
-            const formDataTitleImage = new FormData();
-            formDataTitleImage.append("image", file);
             const formDataImages = new FormData();
             images.forEach((file) => formDataImages.append("images", file));
-            const [titleImageRes, itemImagesRes] = await Promise.all([
-                AdminService.uploadTitleImage(formDataTitleImage),
-                AdminService.uploadItemImages(formDataImages)
-            ])
+            formDataImages.append('titleImageIndex', images.findIndex((img) => img.name === titleImage.title).toString())
+            const itemImagesRes = await AdminService.uploadItemImages(formDataImages)
             return {
-                titleId: titleImageRes.data.imageId,
                 imagesId: itemImagesRes.data.imagesId
             };
         }catch (e) {
             console.log(e)
             return {
-                titleId: null,
                 imagesId: null
             };
         }
     };
 
-    const onSaveProduct = async (data: IFormInput, titleImage: File, images: File[]) => {
+    const onSaveProduct = async (data: FormInputForSave) => {
         switch (Number(productType)) {
             case IItemType.BoardGame: {
-                const { titleId, imagesId } = await onUploadImages(titleImage, images);
-                const boardGame = transformBoardGame(data);
-                boardGame.titleImage = titleId as string;
-                boardGame.images = imagesId as string;
-                addBoardGame({
-                    item: boardGame,
-                    itemType: productType
-                })
+                const { imagesId } = await onUploadImages();
+                if(imagesId) {
+                    const boardGame = transformBoardGame(data);
+                    boardGame.images = imagesId as string;
+                    addBoardGame({
+                        item: boardGame,
+                        itemType: productType
+                    })
+                    setImages([])
+                    setImagePreviews([])
+                }
                 return;
             }
             default:
@@ -69,14 +100,25 @@ const AddProducts = () => {
     const onRenderAddProductForm = () => {
         switch (Number(productType)) {
             case IItemType.BoardGame:
-                return <BoardGameForm
+                return <>
+                        <BoardGameForm
+                            disableSubmitButton={false}
                             defaultValues={defaultValues}
                             isEdit={false}
-                            save={onSaveProduct}
-                            imagesPreviews={[]}/>
+                            save={onSaveProduct}/>
+                        <StandardImageList
+                            imageData={imagePreviews}
+                            selectFiles={onFileChange}
+                            deleteImage={onDeleteImage}
+                            selectImage={onSetImageAsTitle} />
+                        </>
             default:
                 return <Box>No product type selected</Box>
         }
+    }
+
+    if(isLoading) {
+        return <Loader />
     }
 
     return(

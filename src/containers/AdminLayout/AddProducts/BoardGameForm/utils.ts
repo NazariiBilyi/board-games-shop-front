@@ -1,11 +1,10 @@
-import {IFormInput} from "./types.ts";
+import {FormInputForSave } from "./types.ts";
+import {IItemPayload} from "../../../../services/admin/types.ts";
 
 export const defaultValues = {
     name: '',
     type: '',
     price: '',
-    titleImage: null,
-    images: null,
     availability: '',
     description: '',
     ageRestrictions: '',
@@ -15,10 +14,10 @@ export const defaultValues = {
     language: ''
 }
 
-export const transformBoardGame = (boardGame: IFormInput) => {
+export const transformBoardGame = (boardGame: FormInputForSave) => {
     return {
         ...boardGame,
-        price: Number(boardGame.price.replace(',', '.')),
+        price: Number(boardGame?.price  ? boardGame?.price.replace(',', '.') : 0),
         availability: Boolean(boardGame.availability),
-    }
+    } as IItemPayload
 }

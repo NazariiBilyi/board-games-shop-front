@@ -1,7 +1,6 @@
 import {Box, Drawer, List, ListItem, ListItemButton, ListItemText} from "@mui/material";
 import {useNavigate} from "react-router";
-
-const drawerWidth = 240;
+import {useStyles} from "./styles";
 
 const navigation = [
     {name: 'Products', href: '/admin-panel/products'},
@@ -9,6 +8,8 @@ const navigation = [
 ]
 
 const AdminSidebar = () => {
+
+    const classes = useStyles()
 
     const navigate = useNavigate();
 
@@ -19,11 +20,7 @@ const AdminSidebar = () => {
     return(
         <Drawer
             variant="permanent"
-            sx={{
-                width: drawerWidth,
-                flexShrink: 0,
-                [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', marginTop: '65px' },
-            }}
+            className={classes.drawer}
         >
             <Box sx={{ overflow: 'auto' }}>
                 <List>

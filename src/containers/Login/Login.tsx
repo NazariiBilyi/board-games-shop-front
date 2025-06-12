@@ -4,19 +4,19 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useStyles } from "./styles";
 import { IFormInput } from "./types.ts";
 import { useNavigate } from "react-router";
-import useCombinedStore from "../../store/store.ts";
+import useCombinedStore from "@store/store.ts";
 import { useEffect } from "react";
-import FormTextField from "../../components/styled/FormTextField.tsx";
-import FormCard from "../../components/styled/FormCard.tsx";
-import SubmitButton from "../../components/styled/SubmitButton.tsx";
-import NavigationButton from "../../components/styled/NavigationButton.tsx";
+import FormTextField from "@components/styled/FormTextField";
+import FormCard from "@components/styled/FormCard";
+import SubmitButton from "@components/styled/SubmitButton";
+import NavigationButton from "@components/styled/NavigationButton";
 
 const Login: React.FC = () => {
 
     const classes = useStyles();
     const navigate = useNavigate();
 
-    const login = useCombinedStore((state) => state.login)
+    const login = useCombinedStore((state) => state.auth.login)
 
     const { control, handleSubmit, formState: { errors }, } = useForm({
         defaultValues: {

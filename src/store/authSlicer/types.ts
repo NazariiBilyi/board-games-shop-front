@@ -1,16 +1,18 @@
 import {IForgotPasswordParams, ILoginParams, ISignUpParams} from "../../services/auth/types.ts";
 
-export interface IAuthState {
-    token: null | string,
-    id: null | string,
-    error: null | string,
-    userRole: null | number,
-    signUp: (params: ISignUpParams, callback: () => void) => Promise<void>,
-    login: (params: ILoginParams, callback: () => void) => Promise<void>,
-    forgotPassword: (params: IForgotPasswordParams, callback: () => void) => Promise<void>,
-    resetPassword: (params: IResetPasswordParams, callback: () => void) => Promise<void>,
-    clearToken: () => void,
-    setState: (state: Partial<IAuthState>) => void
+export interface IAuthSliceState {
+    auth: {
+        token: null | string,
+        id: null | string,
+        userRole: null | number,
+        isLoading: boolean,
+        signUp: (params: ISignUpParams, callback: () => void) => Promise<void>,
+        login: (params: ILoginParams, callback: () => void) => Promise<void>,
+        forgotPassword: (params: IForgotPasswordParams, callback: () => void) => Promise<void>,
+        resetPassword: (params: IResetPasswordParams, callback: () => void) => Promise<void>,
+        clearToken: () => void,
+    },
+    updateAuthState: (state: Partial<IAuthSliceState['auth']>) => void;
 }
 
 export interface IAuthResponse {

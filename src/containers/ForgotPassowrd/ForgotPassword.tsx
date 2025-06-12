@@ -1,18 +1,18 @@
 import {CardContent, CardHeader, Stack} from "@mui/material";
-import FormCard from "../../components/styled/FormCard.tsx";
+import FormCard from "@components/styled/FormCard.tsx";
 import {useStyles} from "./styles";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
-import FormTextField from "../../components/styled/FormTextField.tsx";
+import FormTextField from "@components/styled/FormTextField.tsx";
 import {IForgotPasswordForm} from "./types.ts";
-import SubmitButton from "../../components/styled/SubmitButton.tsx";
-import NavigationButton from "../../components/styled/NavigationButton.tsx";
+import SubmitButton from "@components/styled/SubmitButton.tsx";
+import NavigationButton from "@components/styled/NavigationButton.tsx";
 import {useNavigate} from "react-router";
-import useCombinedStore from "../../store/store.ts";
+import useCombinedStore from "@store/store.ts";
 
 const ForgotPassword = () => {
     const classes = useStyles();
 
-    const forgotPassword = useCombinedStore((state) => state.forgotPassword);
+    const forgotPassword = useCombinedStore((state) => state.auth.forgotPassword);
 
     const navigate = useNavigate();
 

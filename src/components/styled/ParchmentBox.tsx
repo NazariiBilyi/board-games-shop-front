@@ -1,6 +1,6 @@
 import {styled} from "@mui/material/styles";
 import {Box, BoxProps} from "@mui/material";
-import parchmentTexture from "../../assets/images/parchment-texture.png";
+import parchmentTexture from "@assets/images/parchment-texture.png";
 
 export const ParchmentBox = styled(Box)<BoxProps>(() => ({
     background: `url(${parchmentTexture}) no-repeat center center`,

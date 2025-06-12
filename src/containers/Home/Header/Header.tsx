@@ -1,18 +1,18 @@
 import {useNavigate} from "react-router";
 import {useStyles} from "./styles";
-import useCombinedStore from "../../../store/store.ts";
+import useCombinedStore from "@store/store.ts";
 import { useState, MouseEvent } from "react";
 import {AppBar, Box, IconButton, Menu, MenuItem, Stack, Toolbar, Typography} from "@mui/material";
-import {UserRoles} from "../../../store/authSlicer/types.ts";
+import {UserRoles} from "@store/authSlicer/types.ts";
 
 const Header = () => {
     const classes = useStyles();
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const userRole = useCombinedStore((state) => state.userRole);
+    const userRole = useCombinedStore((state) => state.auth.userRole);
 
     const navigate = useNavigate();
-    const clearToken = useCombinedStore((state) => state.clearToken)
+    const clearToken = useCombinedStore((state) => state.auth.clearToken)
 
     const handleMenu = (event: MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);

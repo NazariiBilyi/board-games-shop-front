@@ -16,15 +16,16 @@ export interface IGetItemByIdAndTypeParams {
     itemType: string;
 }
 
-export interface IAdminState {
-    error: null | string,
-    products: null | IBoardGame[],
-    productForEdit: null | IBoardGame,
-    isLoading: boolean,
-    setState: (state: Partial<IAdminState>) => void
-    getItemByIdAndType: (params: IGetItemByIdAndTypeParams) => void,
-    updateProduct: (params: IUpdateProductParams, callback?: (itemId: string) => void) => void
-    addNewProduct: (params: IAddNewProductParams, callback?: (itemId: string) => void) => void,
-    getItemsByType: (params: {type: string}) => void,
-    deleteItemByType: (params: {type: string, itemId: string}) => void,
+export interface IAdminSliceState {
+    admin: {
+        products: null | IBoardGame[],
+        productForEdit: null | IBoardGame,
+        isLoading: boolean,
+        getItemByIdAndType: (params: IGetItemByIdAndTypeParams) => void,
+        updateProduct: (params: IUpdateProductParams, callback?: (itemId: string) => void) => void
+        addNewProduct: (params: IAddNewProductParams, callback?: (itemId: string) => void) => void,
+        getItemsByType: (params: {type: string}) => void,
+        deleteItemByType: (params: {type: string, itemId: string}) => void,
+    },
+    updateAdminState: (state: Partial<IAdminSliceState['admin']>) => void;
 }

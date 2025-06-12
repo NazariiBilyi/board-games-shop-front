@@ -11,7 +11,7 @@ const axiosInstance: AxiosInstance = axios.create({
         Accept: 'application/json',
     },
     paramsSerializer: {
-        indexes: null // by default: false
+        indexes: null
     },
     responseType: 'json',
 })
@@ -29,7 +29,6 @@ axiosInstance.interceptors.request.use(request => {
         delete request.headers['Content-Type'];
     }
 
-    // Set multipart header if FormData
     if (request.data instanceof FormData) {
         request.headers['Content-Type'] = 'multipart/form-data';
     }

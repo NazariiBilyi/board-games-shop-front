@@ -1,24 +1,24 @@
 import {useParams} from "react-router";
 import {ChangeEvent, useEffect, useMemo, useState} from "react";
 import BoardGameForm from "../AddProducts/BoardGameForm/BoardGameForm.tsx";
-import { IItemType } from "../../../services/admin/types.ts";
+import { IItemType } from "@services/admin/types.ts";
 import {Box} from "@mui/material";
 import {IEditProductParams} from "./types.ts";
-import useCombinedStore from "../../../store/store.ts";
+import useCombinedStore from "@store/store.ts";
 import {boardGameForEditSchema, transformProductForEdit, transformToDefaultValues} from "./utils.ts";
-import {IImageData} from "../../../components/StandardImagesList/types.ts";
+import {IImageData} from "@components/StandardImagesList/types.ts";
 import { IFormInput } from "../AddProducts/BoardGameForm/types.ts";
-import {StandardImageList} from "../../../components/StandardImagesList/StandardImagesList.tsx";
-import {AdminService} from "../../../services/admin/admin.ts";
+import {StandardImageList} from "@components/StandardImagesList/StandardImagesList.tsx";
+import {AdminService} from "@services/admin/admin.ts";
 
 const EditProducts = () => {
     const [images, setImages] = useState<File[]>([]);
     const [imagePreviews, setImagePreviews] = useState<IImageData[]>([]);
 
     const params = useParams<IEditProductParams>();
-    const productForEdit = useCombinedStore(state => state.productForEdit);
-    const getProductById = useCombinedStore(state => state.getItemByIdAndType)
-    const updateProduct = useCombinedStore(state => state.updateProduct)
+    const productForEdit = useCombinedStore(state => state.admin.productForEdit);
+    const getProductById = useCombinedStore(state => state.admin.getItemByIdAndType);
+    const updateProduct = useCombinedStore(state => state.admin.updateProduct);
     const {id, type} = params;
 
     useEffect(() => {
@@ -66,21 +66,12 @@ const EditProducts = () => {
 
     const onSetImageAsTitle = (title: string) => {
         setImagePreviews(prevState => prevState.map(img => {
-            if(img.title === title) {
-                img.isTitle = true
-                return img
-            }
+            img.isTitle = title === img.title
             return img
         }))
     }
 
-    const onEditProduct = async (data: Partial<IFormInput>) => {
-        const params = {
-            itemId: id as string,
-            itemType: type as string,
-            item: transformProductForEdit(data)
-        }
-
+    const updateImages = async () => {
         const imagesFormData = new FormData();
         if(images) {
             images.forEach(img => imagesFormData.append('images', img))
@@ -91,8 +82,22 @@ const EditProducts = () => {
                 imagesFormData.append("imagesForDelete", img?._id as string);
             }
         })
+        const titlePreview = imagePreviews.find(img => img.isTitle)
+        const productTitle = productForEdit?.images?.images?.find(img => img.isTitle)
+        if(titlePreview?.title !== productTitle?.name) {
+            imagesFormData.append('newTitle', titlePreview?.title as string)
+        }
         await AdminService.updateItemImages(productForEdit?.images?._id as string, imagesFormData)
+    }
+
+    const onEditProduct = async (data: Partial<IFormInput>) => {
+        const params = {
+            itemId: id as string,
+            itemType: type as string,
+            item: transformProductForEdit(data)
+        }
         updateProduct(params)
+        await updateImages()
     }
 
     const onDisableSubmitButton = ():boolean => {

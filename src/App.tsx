@@ -1,24 +1,27 @@
-import Router from "./router/Router.tsx";
+import Router from "@router/Router";
 import {useEffect} from "react";
-import useCombinedStore from "./store/store.ts";
+import useCombinedStore from "@store/store";
 import {jwtDecode} from "jwt-decode";
-import {IJWTPayload} from "./store/authSlicer/types.ts";
+import {IJWTPayload} from "@store/authSlicer/types";
+import MessageSnackbar from "@components/MessageSnackbar/MessageSnackbar.tsx";
 
 function App() {
-    const setState = useCombinedStore(state => state.setState)
-
+    const setAuthState = useCombinedStore(state => state.updateAuthState)
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken')
         if (!token) return;
         const decoded = jwtDecode(token) as IJWTPayload;
 
-        setState({ userRole: decoded.userRole, token: token });
-    }, [setState])
+        setAuthState({ userRole: decoded.userRole, token: token });
+    }, [setAuthState])
 
     return (
-        <Router />
-  )
+        <>
+            <Router />
+            <MessageSnackbar />
+        </>
+    )
 }
 
 export default App

@@ -1,8 +1,8 @@
 import {AppBar, Box, Button, Stack, Toolbar, Typography} from "@mui/material";
-import useCombinedStore from "../../../store/store.ts";
+import useCombinedStore from "@store/store.ts";
 
 const AdminHeader = () => {
-    const token = useCombinedStore((state) => state.token)
+    const token = useCombinedStore((state) => state.auth.token)
 
     return(
         <Box sx={{ flexGrow: 1 }}>

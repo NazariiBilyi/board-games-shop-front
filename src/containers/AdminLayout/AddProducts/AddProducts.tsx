@@ -2,14 +2,14 @@ import { Box, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/mater
 import {ChangeEvent, useState} from "react";
 import BoardGameForm from "./BoardGameForm/BoardGameForm.tsx";
 import { products } from '../utils/getProductTypes.ts'
-import {IItemType} from "../../../services/admin/types.ts";
+import {IItemType} from "@services/admin/types.ts";
 import {FormInputForSave} from "./BoardGameForm/types.ts";
 import {defaultValues, transformBoardGame} from "./BoardGameForm/utils.ts";
-import useCombinedStore from "../../../store/store.ts";
-import {AdminService} from "../../../services/admin/admin.ts";
-import {StandardImageList} from "../../../components/StandardImagesList/StandardImagesList.tsx";
-import {IImageData} from "../../../components/StandardImagesList/types.ts";
-import {Loader} from "../../../components/Loader/Loader.tsx";
+import useCombinedStore from "@store/store.ts";
+import {AdminService} from "@services/admin/admin.ts";
+import {StandardImageList} from "@components/StandardImagesList/StandardImagesList.tsx";
+import {IImageData} from "@components/StandardImagesList/types.ts";
+import {Loader} from "@components/Loader/Loader.tsx";
 
 const AddProducts = () => {
 
@@ -17,8 +17,8 @@ const AddProducts = () => {
     const [images, setImages] = useState<File[]>([]);
     const [imagePreviews, setImagePreviews] = useState<IImageData[]>([]);
 
-    const addBoardGame = useCombinedStore(state => state.addNewProduct)
-    const isLoading = useCombinedStore(state => state.isLoading);
+    const addBoardGame = useCombinedStore(state => state.admin.addNewProduct)
+    const isLoading = useCombinedStore(state => state.admin.isLoading);
 
     const handleChange = (event: SelectChangeEvent) => {
         setProductType(event.target.value as string);

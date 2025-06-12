@@ -1,23 +1,20 @@
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import {CardContent, CardHeader, Stack} from "@mui/material";
-import FormTextField from "../../components/styled/FormTextField.tsx";
-import SubmitButton from "../../components/styled/SubmitButton.tsx";
-import NavigationButton from "../../components/styled/NavigationButton.tsx";
-import FormCard from "../../components/styled/FormCard.tsx";
+import FormTextField from "@components/styled/FormTextField.tsx";
+import SubmitButton from "@components/styled/SubmitButton.tsx";
+import NavigationButton from "@components/styled/NavigationButton.tsx";
+import FormCard from "@components/styled/FormCard.tsx";
 import {useStyles} from "./styles";
 import {useNavigate, useParams} from "react-router";
 import {IResetPasswordForm} from "./types.ts";
-import useCombinedStore from "../../store/store.ts";
+import useCombinedStore from "@store/store.ts";
 
 const ResetPassword = () => {
     const classes = useStyles();
     const navigate = useNavigate()
     const params = useParams()
 
-    const resetPassword = useCombinedStore((state) => state.resetPassword)
-
-    console.log(params)
-
+    const resetPassword = useCombinedStore((state) => state.auth.resetPassword)
 
     const { control, handleSubmit, watch, formState: { errors }, } = useForm({
         defaultValues: {

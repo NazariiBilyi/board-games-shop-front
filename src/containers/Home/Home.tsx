@@ -1,6 +1,6 @@
 import {Box, Container} from "@mui/material";
 import {useStyles} from "./styles";
-import {ParchmentBox} from "../../components/styled/ParchmentBox.tsx";
+import {ParchmentBox} from "@components/styled/ParchmentBox.tsx";
 
 
 const Home = () => {

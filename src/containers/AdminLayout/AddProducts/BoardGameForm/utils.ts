@@ -1,5 +1,5 @@
 import {FormInputForSave } from "./types.ts";
-import {IItemPayload} from "../../../../services/admin/types.ts";
+import {IItemPayload} from "@services/admin/types";
 
 export const defaultValues = {
     name: '',

@@ -1,16 +1,16 @@
 import {Route, Routes} from "react-router";
-import Home from "../containers/Home/Home.tsx";
-import Login from "../containers/Login/Login.tsx";
-import Signup from "../containers/SignUp/Signup.tsx";
-import NotFound from "../containers/NotFound.tsx";
-import ForgotPassword from "../containers/ForgotPassowrd/ForgotPassword.tsx";
-import ResetPassword from "../containers/ResetPassword/ResetPassword.tsx";
+import Home from "@containers/Home/Home.tsx";
+import Login from "@containers/Login/Login.tsx";
+import Signup from "@containers/SignUp/Signup.tsx";
+import NotFound from "@containers/NotFound.tsx";
+import ForgotPassword from "@containers/ForgotPassowrd/ForgotPassword.tsx";
+import ResetPassword from "@containers/ResetPassword/ResetPassword.tsx";
 import AdminRoute from "./AdminRoute.tsx";
-import Layout from "../containers/Layout/Layout.tsx";
-import AdminLayout from "../containers/AdminLayout/AdminLayout.tsx";
-import ViewProducts from "../containers/AdminLayout/ViewProducts/ViewProducts.tsx";
-import AddProducts from "../containers/AdminLayout/AddProducts/AddProducts.tsx";
-import EditProducts from "../containers/AdminLayout/EditProducts/EditProducts.tsx";
+import Layout from "@containers/Layout/Layout.tsx";
+import AdminLayout from "@containers/AdminLayout/AdminLayout.tsx";
+import ViewProducts from "@containers/AdminLayout/ViewProducts/ViewProducts.tsx";
+import AddProducts from "@containers/AdminLayout/AddProducts/AddProducts.tsx";
+import EditProducts from "@containers/AdminLayout/EditProducts/EditProducts.tsx";
 
 const Router = () => {
     return (

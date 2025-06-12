@@ -2,13 +2,13 @@ import * as React from "react";
 import { CardContent, CardHeader, Stack } from "@mui/material";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import { useStyles } from './styles.js'
-import useCombinedStore from "../../store/store.ts";
+import useCombinedStore from "@store/store";
 import {IFormInput} from "./types.ts";
 import {useNavigate} from "react-router";
-import FormCard from "../../components/styled/FormCard.tsx";
-import FormTextField from "../../components/styled/FormTextField.tsx";
-import SubmitButton from "../../components/styled/SubmitButton.tsx";
-import NavigationButton from "../../components/styled/NavigationButton.tsx";
+import FormCard from "@components/styled/FormCard";
+import FormTextField from "@components/styled/FormTextField";
+import SubmitButton from "@components/styled/SubmitButton";
+import NavigationButton from "@components/styled/NavigationButton";
 
 const Signup:React.FC = () => {
 
@@ -16,7 +16,7 @@ const Signup:React.FC = () => {
 
     const navigate = useNavigate();
 
-    const signUp = useCombinedStore((state) => state.signUp)
+    const signUp = useCombinedStore((state) => state.auth.signUp)
 
     const { control, handleSubmit, formState: { errors }, } = useForm({
         defaultValues: {

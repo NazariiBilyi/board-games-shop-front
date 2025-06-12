@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 import {Card, CardProps} from "@mui/material";
-import parchmentTexture from "../../assets/images/parchment-texture.png";
+import parchmentTexture from "@assets/images/parchment-texture.png";
 
 const FormCard = styled(Card)<CardProps>(() => ({
     position: 'absolute',

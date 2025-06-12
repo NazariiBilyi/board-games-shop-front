@@ -4,14 +4,15 @@ import EditIcon from '@mui/icons-material/Edit';
 import * as React from "react";
 import { products } from '../utils/getProductTypes.ts'
 import {useEffect, useState, useMemo} from "react";
-import useCombinedStore from "../../../store/store.ts";
+import useCombinedStore from "@store/store.ts";
 import {useStyles} from "./styles";
-import TableComponent from "../../../components/TableComponent/TableComponent.tsx";
+import TableComponent from "@components/TableComponent/TableComponent.tsx";
 import {getTableHeads} from "./utils/getTableHeads.ts";
 import {getTableRows} from "./utils/getTableRows.ts";
-import {IRow} from "../../../components/TableComponent/types.ts";
+import {IRow} from "@components/TableComponent/types.ts";
 import {useNavigate} from "react-router";
 import {IShopItem} from "./types.ts";
+import {Loader} from "@components/Loader/Loader.tsx";
 
 const ViewProducts: React.FC = () => {
 
@@ -20,11 +21,13 @@ const ViewProducts: React.FC = () => {
 
     const [productType, setProductType] = useState<number>(0)
 
-    const productsByType= useCombinedStore(state => state.products)
+    const productsByType= useCombinedStore(state => state.admin.products)
 
-    const getItemsByType = useCombinedStore(state => state.getItemsByType);
+    const getItemsByType = useCombinedStore(state => state.admin.getItemsByType);
 
-    const deleteItemByType = useCombinedStore(state => state.deleteItemByType)
+    const isLoading = useCombinedStore(state => state.admin.isLoading);
+
+    const deleteItemByType = useCombinedStore(state => state.admin.deleteItemByType)
 
     useEffect(() => {
         if(productType !== undefined) {
@@ -56,6 +59,10 @@ const ViewProducts: React.FC = () => {
             itemId: productId,
             type: productType?.toString() as string
         })
+    }
+
+    if(isLoading) {
+        return <Loader />
     }
 
     const onGetActions = (row: IRow) => (

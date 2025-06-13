@@ -1,13 +1,13 @@
 import {ISignUpParams, ILoginParams, IForgotPasswordParams} from "@services/auth/types.ts";
-import {AxiosResponse} from "axios";
+import {AxiosError, AxiosResponse} from "axios";
 import {IAuthResponse, IAuthSliceState, IJWTPayload, ILoginResponse, IResetPasswordParams} from "./types.ts";
 import {AuthService} from "@services/auth/auth.ts";
 import {StateCreator} from "zustand/vanilla";
 import { jwtDecode } from "jwt-decode";
-import {IErrorSliceState} from "@store/errorSlice/types.ts";
+import {INotificationState} from "@store/notificationSlice/types.ts";
 
 export const authSlice: StateCreator<
-    IAuthSliceState & IErrorSliceState,
+    IAuthSliceState & INotificationState,
     [],
     [],
     IAuthSliceState
@@ -19,7 +19,7 @@ export const authSlice: StateCreator<
         token: null,
         signUp: async (params: ISignUpParams, callback: () => void): Promise<void> => {
             try {
-                get().setAppError(null)
+                get().clearNotification()
                 get().updateAuthState({isLoading: true})
 
                 const response: AxiosResponse<IAuthResponse> = await AuthService.signUp(params);
@@ -29,14 +29,17 @@ export const authSlice: StateCreator<
                 callback();
 
                 get().updateAuthState({ id: userData.userId, isLoading: false });
+
+                get().setNotification({message: userData.message, variant: 'success'})
             } catch (e) {
-                if(e instanceof Error) get().setAppError(e.message)
+                if(e instanceof AxiosError && e.response) get().setNotification({message: e.response?.data?.message, variant: "error"})
+                else if(e instanceof Error) get().setNotification({message: e.message, variant: 'error'})
                 get().updateAuthState({isLoading: false})
             }
         },
         login: async (params: ILoginParams, callback: () => void): Promise<void> => {
             try {
-                get().setAppError(null)
+                get().clearNotification()
                 get().updateAuthState({isLoading: true})
 
                 const response: AxiosResponse<ILoginResponse> = await AuthService.login(params);
@@ -52,15 +55,18 @@ export const authSlice: StateCreator<
                     userRole: decoded.userRole,
                     isLoading: false
                 });
+
+                get().setNotification({message: userData.message, variant: 'success'})
                 callback()
             } catch (e) {
-                if(e instanceof Error) get().setAppError(e.message)
+                if(e instanceof AxiosError && e.response) get().setNotification({message: e.response?.data?.message, variant: "error"})
+                else if(e instanceof Error) get().setNotification({message: e.message, variant: "error"})
                 get().updateAuthState({isLoading: false})
             }
         },
         forgotPassword: async(params: IForgotPasswordParams, callback: () => void ):Promise<void> => {
             try {
-                get().setAppError(null)
+                get().clearNotification()
                 get().updateAuthState({isLoading: true})
 
                 await AuthService.forgotPassword(params);
@@ -69,13 +75,14 @@ export const authSlice: StateCreator<
                 get().updateAuthState({isLoading: false})
 
             } catch (e) {
-                if(e instanceof Error) get().setAppError(e.message)
+                if(e instanceof AxiosError && e.response) get().setNotification({message: e.response?.data?.message, variant: 'error'})
+                else if(e instanceof Error) get().setNotification({message: e.message, variant: 'error'})
                 get().updateAuthState({isLoading: false})
             }
         },
         resetPassword: async(params: IResetPasswordParams, callback: () => void):Promise<void> => {
             try {
-                get().setAppError(null)
+                get().clearNotification()
                 get().updateAuthState({isLoading: true})
 
                 await AuthService.resetPassword(params)
@@ -85,7 +92,8 @@ export const authSlice: StateCreator<
                 get().updateAuthState({isLoading: false})
 
             } catch (e) {
-                if(e instanceof Error) get().setAppError(e.message)
+                if(e instanceof AxiosError && e.response) get().setNotification({message: e.response?.data?.message, variant: 'error'})
+                else if(e instanceof Error) get().setNotification({message: e.message, variant: 'error'})
                 get().updateAuthState({isLoading: false})
             }
         },

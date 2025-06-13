@@ -3,7 +3,7 @@ import {useEffect} from "react";
 import useCombinedStore from "@store/store";
 import {jwtDecode} from "jwt-decode";
 import {IJWTPayload} from "@store/authSlicer/types";
-import MessageSnackbar from "@components/MessageSnackbar/MessageSnackbar.tsx";
+import MessageSnackbar from "@components/MessageSnackbar/NotificationSnackbar.tsx";
 
 function App() {
     const setAuthState = useCombinedStore(state => state.updateAuthState)

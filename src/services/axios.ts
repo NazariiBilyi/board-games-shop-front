@@ -49,4 +49,20 @@ axiosInstance.interceptors?.request.use((request) => {
     return request;
 });
 
+axiosInstance.interceptors.response.use(
+    response => response,
+    error => {
+        if (error.response?.status === 401) {
+            // Clear any auth tokens if stored
+            localStorage.removeItem('accessToken');
+
+            // Optional: redirect to login
+            window.location.href = '/login'; // Can’t use useNavigate here
+        }
+
+        // Re-throw error for local handlers to catch
+        return Promise.reject(error);
+    }
+);
+
 export default axiosInstance;

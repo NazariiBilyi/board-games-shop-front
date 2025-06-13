@@ -1,12 +1,12 @@
 import {StateCreator} from "zustand/vanilla";
 import {IAdminSliceState, IGetItemByIdAndTypeParams} from "./types.ts";
-import {AxiosResponse} from "axios";
+import {AxiosError, AxiosResponse} from "axios";
 import { ICreateNewItemResponse } from "@services/admin/types.ts";
 import {AdminService} from "@services/admin/admin.ts";
-import {IErrorSliceState} from "@store/errorSlice/types.ts";
+import {INotificationState} from "@store/notificationSlice/types.ts";
 
 export const adminSlice: StateCreator<
-    IAdminSliceState & IErrorSliceState,
+    IAdminSliceState & INotificationState,
     [],
     [],
     IAdminSliceState
@@ -16,7 +16,7 @@ export const adminSlice: StateCreator<
         productForEdit: null,
         isLoading: false,
         addNewProduct: async (params, callback): Promise<void>  => {
-            get().setAppError(null)
+            get().clearNotification()
             get().updateAdminState({isLoading: true})
             try {
                 const response: AxiosResponse<ICreateNewItemResponse> = await AdminService.createNewItem(params.itemType.toString(), params.item);
@@ -28,29 +28,35 @@ export const adminSlice: StateCreator<
                     callback(itemData.itemId);
                 }
 
+                get().setNotification({message: itemData.message, variant: 'success'})
+
             }catch (e){
-                if(e instanceof Error) get().setAppError(e.message)
-                get().updateAdminState({ isLoading: false});
+                if(e instanceof AxiosError && e.response) get().setNotification({message: e.response?.data?.message, variant: 'error'})
+                else if(e instanceof Error) get().setNotification({message: e.message, variant: 'error'})
+                get().updateAdminState({isLoading: false});
             }
         },
         updateProduct: async (params): Promise<void> => {
-            get().setAppError(null)
+            get().clearNotification()
             get().updateAdminState({isLoading: true});
 
             try {
                 const { itemId, itemType, item} = params;
 
-                await AdminService.updateItemByIdAndType(itemId, itemType, item)
+                const response = await AdminService.updateItemByIdAndType(itemId, itemType, item)
 
                 get().updateAdminState({isLoading: false});
+
+                get().setNotification({message: response.data.message, variant: 'success'})
             } catch (e) {
-                if(e instanceof Error) get().setAppError(null);
+                if(e instanceof AxiosError && e.response) get().setNotification({message: e.response?.data?.message, variant: 'error'})
+                else if(e instanceof Error) get().setNotification({message: e.message, variant: 'error'})
                 get().updateAdminState({isLoading: false});
             }
 
         },
         getItemByIdAndType: async (params: IGetItemByIdAndTypeParams): Promise<void> => {
-            get().setAppError(null)
+            get().clearNotification()
             get().updateAdminState({productForEdit: null, isLoading: true})
 
             try{
@@ -62,13 +68,16 @@ export const adminSlice: StateCreator<
                     productForEdit: response.data.boardGame,
                     isLoading: false,
                 })
+
+                get().setNotification({message: response.data.message, variant: 'success'})
             } catch (e) {
-                if(e instanceof Error) get().setAppError( e.message)
+                if(e instanceof AxiosError && e.response) get().setNotification({message: e.response?.data?.message, variant: 'error'})
+                else if(e instanceof Error) get().setNotification({message: e.message, variant: 'error'})
                 get().updateAdminState({productForEdit: null, isLoading: false})
             }
         },
         getItemsByType: async(params): Promise<void> => {
-            get().setAppError(null)
+            get().clearNotification()
             get().updateAdminState({isLoading: true})
 
             try{
@@ -78,24 +87,31 @@ export const adminSlice: StateCreator<
 
                 get().updateAdminState({products: response.data.boardGames, isLoading: false})
             }catch (e) {
-                console.log(e)
-                if(e instanceof Error) get().setAppError(e.message)
-                get().updateAdminState({isLoading: false})
+                if(e instanceof AxiosError && e.response) get().setNotification({message: e.response?.data?.message, variant: 'error'})
+                else if(e instanceof Error) get().setNotification({message: e.message, variant: 'error'})
+                get().updateAdminState({products: [], isLoading: false})
             }
         },
         deleteItemByType: async(params): Promise<void> => {
-            get().setAppError(null)
+            get().clearNotification()
             get().updateAdminState({isLoading: true})
 
             try{
                 const {type, itemId} = params
 
-                await AdminService.deleteItemByType(type, itemId)
+                const response = await AdminService.deleteItemByType(type, itemId)
                 get().updateAdminState({
                     isLoading: false
                 })
+
+                get().admin.getItemsByType({
+                    type
+                })
+
+                get().setNotification({message: response?.data?.message, variant: 'success'})
             } catch (e) {
-                if(e instanceof Error) get().setAppError(e.message)
+                if(e instanceof AxiosError && e.response) get().setNotification({message: e.response?.data?.message, variant: 'error'})
+                else if(e instanceof Error) get().setNotification({message: e.message, variant: 'error'})
                 get().updateAdminState({isLoading: false})
             }
         }

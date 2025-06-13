@@ -97,12 +97,16 @@ const AddProducts = () => {
 
     }
 
+    const onDisableSubmitButton = () => {
+        return imagePreviews.length === 0 || !imagePreviews.find(img => img.isTitle)
+    }
+
     const onRenderAddProductForm = () => {
         switch (Number(productType)) {
             case IItemType.BoardGame:
                 return <>
                         <BoardGameForm
-                            disableSubmitButton={false}
+                            disableSubmitButton={onDisableSubmitButton()}
                             defaultValues={defaultValues}
                             isEdit={false}
                             save={onSaveProduct}/>

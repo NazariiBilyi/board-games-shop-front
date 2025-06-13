@@ -3,16 +3,16 @@ import {Alert} from "@mui/material";
 import {useEffect, useState, SyntheticEvent} from "react";
 import useCombinedStore from "@store/store.ts";
 
-const MessageSnackbar = () => {
+const NotificationSnackbar = () => {
     const [open, setOpen] = useState(false);
 
-    const error = useCombinedStore(state => state.appError)
+    const notification = useCombinedStore(state => state.notification)
 
     useEffect(() => {
-        if(error){
+        if(notification){
             setOpen(true);
         }
-    }, [error]);
+    }, [notification]);
 
     const handleClose = (
         _event?: SyntheticEvent | Event,
@@ -30,15 +30,15 @@ const MessageSnackbar = () => {
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                 <Alert
                     onClose={handleClose}
-                    severity={error ? "error" : "success"}
+                    severity={notification?.variant}
                     variant="filled"
                     sx={{ width: '100%' }}
                 >
-                    {error}
+                    {notification?.message}
                 </Alert>
             </Snackbar>
         </div>
     );
 }
 
-export default MessageSnackbar
+export default NotificationSnackbar
